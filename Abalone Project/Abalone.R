@@ -16,3 +16,37 @@ data
 
 summary(data)
 
+males <- data %>% filter(Sex == "M")
+females <- data %>% filter(Sex == "F")
+infants <- data %>% filter(Sex == "I")
+
+outliers_males <- males %>%
+  select(-Sex) %>%  # Exclude non-numeric column 'Sex'
+  gather() %>%
+  group_by(key) %>%
+  identify_outliers(value)
+
+extreme_outliers_males <- outliers_males %>%
+  filter(is.extreme == TRUE)
+
+outliers_females <- females %>%
+  select(-Sex) %>%
+  gather() %>%
+  group_by(key) %>%
+  identify_outliers(value)
+
+extreme_outliers_females <- outliers_females %>%
+  filter(is.extreme == TRUE)
+
+outliers_infants <- infants %>%
+  select(-Sex) %>%
+  gather() %>%
+  group_by(key) %>%
+  identify_outliers(value)
+
+extreme_outliers_infants <- outliers_infants %>%
+  filter(is.extreme == TRUE)
+
+print(extreme_outliers_males)
+print(extreme_outliers_females)
+print(extreme_outliers_infants)
