@@ -23,9 +23,6 @@ males <- data %>% filter(Sex == "M")
 females <- data %>% filter(Sex == "F")
 infants <- data %>% filter(Sex == "I")
 
-dropped_infants
-
-
 outliers_males <- males %>%
   select(-Sex) %>%  # Exclude non-numeric column 'Sex'
   gather() %>%
@@ -95,48 +92,46 @@ linear_male_weight <- lm(males_cleaned$Whole_Weight ~ males_cleaned$Length + mal
 linear_male_weight
 
 #Whole_Weight ~ Length
-ggplot(linear_male_weight)
  ggplot(males_cleaned, aes(x=Length, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Length vs Whole Weight", x="Length", y="Whole Weight") +
-  +     theme_minimal()
+  geom_point(color="blue") +
+  geom_smooth(method="lm", formula=y ~ x, color="red") +
+  labs(title="Male Length vs Whole Weight", x="Length", y="Whole Weight") +
+  theme_minimal()
  #Whole_Weight ~ Diameter
  ggplot(males_cleaned, aes(x=Diameter, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
-  +     theme_minimal()
+  geom_point(color="blue") +
+  geom_smooth(method="lm", formula=y ~ x, color="red") +
+  labs(title="Male Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
+  theme_minimal()
  #Whole_Weight ~ Height
  ggplot(males_cleaned, aes(x=Height, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Height vs Whole Weight", x="Height", y="Whole Weight") +
-  +     theme_minimal()
+  geom_point(color="blue") +
+  geom_smooth(method="lm", formula=y ~ x, color="red") +
+  labs(title="Male Height vs Whole Weight", x="Height", y="Whole Weight") +
+  theme_minimal()
  
  #Female
  linear_female_weight <- lm(females_cleaned$Whole_Weight ~ females_cleaned$Length + females_cleaned$Diameter + females_cleaned$Height)
  linear_male_weight
  
  #Whole_Weight ~ Length
- ggplot(linear_female_weight)
  ggplot(females_cleaned, aes(x=Length, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Length vs Whole Weight", x="Length", y="Whole Weight") +
-   +     theme_minimal()
+   geom_point(color="blue") +
+   geom_smooth(method="lm", formula=y ~ x, color="red") +
+   labs(title="Female Length vs Whole Weight", x="Length", y="Whole Weight") +
+   theme_minimal()
  #Whole_Weight ~ Diameter
  ggplot(females_cleaned, aes(x=Diameter, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
-   +     theme_minimal()
+   geom_point(color="blue") +
+   geom_smooth(method="lm", formula=y ~ x, color="red") +
+   labs(title="Female Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
+   theme_minimal()
  #Whole_Weight ~ Height
  ggplot(females_cleaned, aes(x=Height, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
-   +     theme_minimal()
+   geom_point(color="blue") +
+   geom_smooth(method="lm", formula=y ~ x, color="red") +
+   labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
+   theme_minimal()
  
  
  
