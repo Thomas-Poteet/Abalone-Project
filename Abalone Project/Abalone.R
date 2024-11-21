@@ -84,3 +84,29 @@ data_cleaned <- bind_rows(
 # Check the cleaned data
 summary(data_cleaned)
 summary(infants)
+
+#Thomas Poteet
+#Finding Predictors of Whole_Weight
+linear_male_weight <- lm(males$Whole_Weight ~ males$Length + males$Diameter + males$Height)
+linear_male_weight
+
+#Whole_Weight ~ Length
+ggplot(linear_male_weight)
+ ggplot(males, aes(x=Length, y=Whole_Weight)) +
+  +     geom_point(color="blue") +
+  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
+  +     labs(title="Length vs Whole Weight", x="Length", y="Whole Weight") +
+  +     theme_minimal()
+ #Whole_Weight ~ Diameter
+ ggplot(males, aes(x=Diameter, y=Whole_Weight)) +
+  +     geom_point(color="blue") +
+  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
+  +     labs(title="Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
+  +     theme_minimal()
+ #Whole_Weight ~ Height
+ ggplot(males, aes(x=Height, y=Whole_Weight)) +
+  +     geom_point(color="blue") +
+  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
+  +     labs(title="Height vs Whole Weight", x="Height", y="Whole Weight") +
+  +     theme_minimal()
+
