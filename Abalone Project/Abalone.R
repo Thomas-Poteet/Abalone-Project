@@ -11,9 +11,11 @@ library(rstatix)
 library(ggplot2)
 
 data = read.csv("abalone.data")
-<<<<<<< HEAD
+
 colnames(data) <- c("Sex","Length", "Diameter", "Height", "Whole_Weight", "Schucked_Weight", "Viscera_Weight", "Shell_Weight", "Rings")
-data
+#data
+
+
 
 summary(data)
 
