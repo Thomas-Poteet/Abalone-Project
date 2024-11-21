@@ -1,4 +1,4 @@
-install.packages(c("tidyverse", "Metrics", "modelr", "broom", "lmtest", "zoo", "sandwich", "rstatix" , "ggplot2"))
+install.packages(c("tidyverse", "Metrics", "modelr", "broom", "lmtest", "zoo", "sandwich", "rstatix" , "ggplot2", "rsample"))
 
 library(tidyverse)
 library(Metrics)
@@ -9,6 +9,7 @@ library(zoo)
 library(sandwich)
 library(rstatix)
 library(ggplot2)
+library(rsample)
 
 data = read.csv("abalone.data")
 
@@ -84,6 +85,13 @@ data_cleaned <- bind_rows(
 # Check the cleaned data
 summary(data_cleaned)
 summary(infants)
+
+#Thomas Poteet
+#Splitting training and test data sets
+split <- initial_split(data_cleaned, prop=0.80)
+training_data <- training(split)
+
+summary(training_data)
 
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
