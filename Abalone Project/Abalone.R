@@ -89,7 +89,7 @@ summary(infants)
 #Finding Predictors of Whole_Weight
 #Male
 linear_male_weight <- lm(males_cleaned$Whole_Weight ~ males_cleaned$Length + males_cleaned$Diameter + males_cleaned$Height)
-linear_male_weight
+tidy(linear_male_weight)
 
 #Whole_Weight ~ Length
  ggplot(males_cleaned, aes(x=Length, y=Whole_Weight)) +
@@ -112,7 +112,7 @@ linear_male_weight
  
  #Female
  linear_female_weight <- lm(females_cleaned$Whole_Weight ~ females_cleaned$Length + females_cleaned$Diameter + females_cleaned$Height)
- linear_male_weight
+ tidy(linear_female_weight)
  
  #Whole_Weight ~ Length
  ggplot(females_cleaned, aes(x=Length, y=Whole_Weight)) +
