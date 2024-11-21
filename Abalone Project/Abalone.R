@@ -11,7 +11,7 @@ library(rstatix)
 library(ggplot2)
 
 data = read.csv("abalone.data")
-colnames(data) <- c("Sex","Length", "Diameter", "Height", "Whole_Weight", "Schucked_Weight", "Viscera_Weight", "Shell Weight", "Rings")
+colnames(data) <- c("Sex","Length", "Diameter", "Height", "Whole_Weight", "Schucked_Weight", "Viscera_Weight", "Shell_Weight", "Rings")
 data
 
 summary(data)
@@ -28,7 +28,7 @@ outliers_males <- males %>%
 
 extreme_outliers_males <- outliers_males %>%
   filter(is.extreme == TRUE)
-
+  
 outliers_females <- females %>%
   select(-Sex) %>%
   gather() %>%
