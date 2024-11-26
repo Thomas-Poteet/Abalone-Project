@@ -87,9 +87,12 @@ summary(data_cleaned)
 summary(infants)
 
 #Thomas Poteet
-#Splitting training and test data sets
-split <- initial_split(data_cleaned, prop=0.80)
-training_data <- training(split)
+#Splitting training and test data sets for both males and females seperate
+males_split <- initial_split(males_cleaned, prop=0.80)
+males_training_data <- training(split)
+
+females_split <- initial_split(females_cleaned, prop=0.80)
+females_training_data <- training(split)
 
 summary(training_data)
 
