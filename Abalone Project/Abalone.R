@@ -23,7 +23,7 @@ males <- data %>% filter(Sex == "M")
 females <- data %>% filter(Sex == "F")
 infants <- data %>% filter(Sex == "I")
 
-dropped_infants
+#dropped_infants
 
 
 outliers_males <- males %>%
@@ -97,47 +97,74 @@ linear_male_weight
 #Whole_Weight ~ Length
 ggplot(linear_male_weight)
  ggplot(males_cleaned, aes(x=Length, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Length vs Whole Weight", x="Length", y="Whole Weight") +
-  +     theme_minimal()
+       geom_point(color="blue") +
+       geom_smooth(method="lm", formula=y ~ x, color="red") +
+       labs(title="Male Length vs Whole Weight", x="Length", y="Whole Weight") +
+       theme_minimal()
  #Whole_Weight ~ Diameter
  ggplot(males_cleaned, aes(x=Diameter, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
-  +     theme_minimal()
+       geom_point(color="blue") +
+       geom_smooth(method="lm", formula=y ~ x, color="red") +
+       labs(title="Male Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
+       theme_minimal()
  #Whole_Weight ~ Height
  ggplot(males_cleaned, aes(x=Height, y=Whole_Weight)) +
-  +     geom_point(color="blue") +
-  +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-  +     labs(title="Male Height vs Whole Weight", x="Height", y="Whole Weight") +
-  +     theme_minimal()
+       geom_point(color="blue") +
+       geom_smooth(method="lm", formula=y ~ x, color="red") +
+       labs(title="Male Height vs Whole Weight", x="Height", y="Whole Weight") +
+       theme_minimal()
  
  #Female
  linear_female_weight <- lm(females_cleaned$Whole_Weight ~ females_cleaned$Length + females_cleaned$Diameter + females_cleaned$Height)
- linear_male_weight
+ linear_female_weight
  
  #Whole_Weight ~ Length
  ggplot(linear_female_weight)
  ggplot(females_cleaned, aes(x=Length, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Length vs Whole Weight", x="Length", y="Whole Weight") +
-   +     theme_minimal()
+        geom_point(color="blue") +
+        geom_smooth(method="lm", formula=y ~ x, color="red") +
+        labs(title="Female Length vs Whole Weight", x="Length", y="Whole Weight") +
+        theme_minimal()
  #Whole_Weight ~ Diameter
  ggplot(females_cleaned, aes(x=Diameter, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
-   +     theme_minimal()
+        geom_point(color="blue") +
+        geom_smooth(method="lm", formula=y ~ x, color="red") +
+        labs(title="Female Diameter vs Whole Weight", x="Diameter", y="Whole Weight") +
+        theme_minimal()
  #Whole_Weight ~ Height
  ggplot(females_cleaned, aes(x=Height, y=Whole_Weight)) +
-   +     geom_point(color="blue") +
-   +     geom_smooth(method="lm", formula=y ~ x, color="red") +
-   +     labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
-   +     theme_minimal()
- 
- 
- 
+        geom_point(color="blue") +
+        geom_smooth(method="lm", formula=y ~ x, color="red") +
+        labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
+        theme_minimal()
 
+ #Devan Hoover
+ #Predictors For Rings With Models
+ linear_male_rings <- lm(Rings ~ Length + Diameter + Height + Whole_Weight, data = males_cleaned)
+ summary(linear_male_rings)
+ 
+ ggplot(males_cleaned, aes(x=Length, y=Rings)) +
+   geom_point(color='blue') +
+   geom_smooth(method ='lm', formula=y ~ x, color='red') +
+   labs(title='Male Length vs Rings',x='Length', y='Rings')+
+   theme_minimal()
+
+ ggplot(males_cleaned, aes(x=Diameter, y=Rings)) +
+   geom_point(color='blue') +
+   geom_smooth(method ='lm', formula=y ~ x, color='red') +
+   labs(title='Male Diameter vs Rings',x='Diameter', y='Rings')+
+   theme_minimal()
+ 
+ ggplot(males_cleaned, aes(x=Height, y=Rings)) +
+   geom_point(color='blue') +
+   geom_smooth(method ='lm', formula=y ~ x, color='red') +
+   labs(title='Male Height vs Rings',x='Height', y='Rings')+
+   theme_minimal()
+ 
+ ggplot(males_cleaned, aes(x=Whole_Weight, y=Rings)) +
+   geom_point(color='blue') +
+   geom_smooth(method ='lm', formula=y ~ x, color='red') +
+   labs(title='Male Whole_Weight vs Rings',x='Whole_Weight', y='Rings')+
+   theme_minimal()
+
+ 
