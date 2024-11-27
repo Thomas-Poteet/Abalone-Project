@@ -10,6 +10,7 @@ library(sandwich)
 library(rstatix)
 library(ggplot2)
 library(rsample)
+library(glmnet) #used for ridge regression
 
 data = read.csv("abalone.data")
 
@@ -144,6 +145,29 @@ tidy(linear_male_weight)
    labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
    theme_minimal()
  
+ #Thomas Poteet- Ridge Regression
+ 
+ #define response variable
+ y <- males_cleaned$Rings
+ 
+ #define matrix of predictor variables
+ x <- data.matrix(males_cleaned[, c('Length', 'Diameter', 'Height', 'Whole_Weight')])
+ 
+ #fit ridge regression model
+ ridge_model <- glmnet(x, y, alpha = 0)
+ 
+ summary(ridge_model)
+ 
+ #perform k-fold cross-validation to find optimal lambda value
+ cv_model <- cv.glmnet(x, y, alpha = 0)
+ 
+ #find optimal lambda value that minimizes test MSE
+ best_lambda <- cv_model$lambda.min
+ best_lambda
+ 
+ #produce plot of test MSE by lambda value
+ plot(cv_model)
  
  
+
 
