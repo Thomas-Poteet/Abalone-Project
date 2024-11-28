@@ -143,6 +143,9 @@ ggplot(linear_male_weight)
  linear_male_rings <- lm(Rings ~ Length + Diameter + Height + Whole_Weight, data = males_cleaned)
  summary(linear_male_rings)
  
+ #Male Rings Equation
+ #Rings = 4.7770 - 13.0274 * Length + 17.3689 * Diameter + 38.5909 * Height -0.2957 * Whole_Weight
+ 
  ggplot(males_cleaned, aes(x=Length, y=Rings)) +
    geom_point(color='blue') +
    geom_smooth(method ='lm', formula=y ~ x, color='red') +
@@ -166,5 +169,27 @@ ggplot(linear_male_weight)
    geom_smooth(method ='lm', formula=y ~ x, color='red') +
    labs(title='Male Whole_Weight vs Rings',x='Whole_Weight', y='Rings')+
    theme_minimal()
-
  
+ #Predictions and Residuals for Linear Model
+ predicted_rings_males <- predict(linear_male_rings, newdata = males_cleaned)
+ residuals <- males_cleaned$Rings - predicted_rings_males
+ summary(residuals)
+ 
+ #MAE RMSE and R^2
+ 
+ mae_value <- mean(abs(males_cleaned$Rings - predicted_rings_males))
+ print(paste("Mean Absolute Error (MAE):", round(mae_value, 2)))
+ 
+ rmse <- sqrt(mean(residuals^2))
+ print(paste("Root Mean Squared Error (RMSE):", round(rmse, 2)))
+ 
+ #From Summary of linear_male_rings
+ r_squared_linear = 0.21
+ 
+ #Some Additional Interactions for testing
+ 
+ linear_male_rings_int1 <- lm(Rings ~ Length * Diameter + Height + Whole_Weight, data = males_cleaned)
+ summary(linear_male_rings_int1)
+ 
+ linear_male_rings_int2 <- lm(Rings ~ Length * Diameter * Height + Whole_Weight, data = males_cleaned)
+ summary(linear_male_rings_int2)
