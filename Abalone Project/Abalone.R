@@ -146,6 +146,7 @@ tidy(linear_male_weight)
    theme_minimal()
  
  #Thomas Poteet- Ridge Regression
+ #source - https://www.statology.org/ridge-regression-in-r/
  
  #define response variable
  y <- males_training_data$Rings
