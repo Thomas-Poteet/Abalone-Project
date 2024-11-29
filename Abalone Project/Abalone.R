@@ -186,4 +186,12 @@ tidy(linear_male_weight)
  #find R-Squared
  rsq <- 1 - sse/sst
  rsq
+ 
+ #predicted vs actual values plot
+ plot(y, y_predicted, 
+      main = "Predicted vs. Actual Values",
+      xlab = "Actual Values", 
+      ylab = "Predicted Values", 
+      pch = 16, col = "blue")
+ abline(0, 1, col = "red", lwd = 2) # Add a reference line
 
