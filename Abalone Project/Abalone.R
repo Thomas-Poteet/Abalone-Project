@@ -90,12 +90,12 @@ summary(infants)
 #Thomas Poteet
 #Splitting training and test data sets for both males and females seperate
 males_split <- initial_split(males_cleaned, prop=0.80)
-males_training_data <- training(split)
+males_training_data <- training(males_split)
 
 females_split <- initial_split(females_cleaned, prop=0.80)
-females_training_data <- training(split)
+females_training_data <- training(females_split)
 
-summary(training_data)
+summary(males_training_data)
 
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
