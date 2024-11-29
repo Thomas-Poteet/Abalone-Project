@@ -148,10 +148,10 @@ tidy(linear_male_weight)
  #Thomas Poteet- Ridge Regression
  
  #define response variable
- y <- males_cleaned$Rings
+ y <- males_training_data$Rings
  
  #define matrix of predictor variables
- x <- data.matrix(males_cleaned[, c('Length', 'Diameter', 'Height', 'Whole_Weight')])
+ x <- data.matrix(males_training_data[, c('Length', 'Diameter', 'Height', 'Whole_Weight')])
  
  #fit ridge regression model
  ridge_model <- glmnet(x, y, alpha = 0)
@@ -168,7 +168,21 @@ tidy(linear_male_weight)
  #produce plot of test MSE by lambda value
  plot(cv_model)
  
- best_model <- glmnet(x,)
- 
+ #find coefficients of best model
+ best_model <- glmnet(x,y, alpha = 0, lambda = best_lambda)
+ coef(best_model)
 
+ #produce Ridge trace plot
+ plot(ridge_model, xvar = "lambda")
+ 
+ #use fitted best model to make predictions
+ y_predicted <- predict(ridge_model, s = best_lambda, newx = x)
+ 
+ #find SST and SSE
+ sst <- sum((y-mean(y))^2)
+ sse <- sum((y_predicted - y)^2)
+ 
+ #find R-Squared
+ rsq <- 1 - sse/sst
+ rsq
 
