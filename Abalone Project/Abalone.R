@@ -217,12 +217,26 @@ summary(male_poly_model3)
 male_poly_model_weightless <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2), data = males_training_data)
 summary(male_poly_model_weightless)
 
-#Scaling Poly Model and Retestings
+#Scaling Training and Testing Data 
 males_training_data_scaled <- males_training_data %>% 
   mutate(
     Length = scale(Length),
     Height = scale(Height),
     Diameter = scale(Diameter)
+  )
+
+#Calculates the means of Length Height and Diameter from the training data
+training_means <- males_training_data %>%
+  summarise(across(c(Length, Height, Diameter), mean))
+
+training_sd <- males_training_data %>%
+  summarise(across(c(Length, Height, Diameter), sd))
+
+males_testing_data_scaled <- males_testing_data %>%
+  mutate(
+    Length = (Length - training_means$Length)/ training_sd$Length,
+    Height = (Height - training_means$Height)/ training_sd$Height,
+    Diameter = (Diameter - training_means$Diameter)/ training_sd$Diameter
   )
 
 male_poly_model_scaled <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2), data = males_training_data_scaled)
@@ -245,10 +259,18 @@ summary(male_model_it)
 male_model_it3 <- lm(Rings ~ Length + Diameter + (Height * Height), data = males_training_data)
 summary(male_model_it3)
 
-#Prediction Tables
+#Prediction Tables and Mae/Rmse
 
 predicted_rings_males_poly <- predict(male_poly_model, newdata = males_testing_data)
 predicted_rings_males_poly_rounded <- round(predicted_rings_males_poly)
+
+pred_poly_3 <- predict(male_poly_model3, newdata = males_testing_data)
+mae_pred_poly_3 <- Metrics::mae(males_testing_data$Rings, pred_poly_3)
+mae_pred_poly_3
+
+pred_poly_scaled <- predict(male_poly_model_scaled, newdata = males_testing_data_scaled)
+mae_pred_poly_scaled <- Metrics::mae(males_testing_data$Rings, pred_poly_scaled)
+mae_pred_poly_scaled
 
 poly_pred_table <- data.frame(
   Actual_Rings = males_testing_data$Rings,
@@ -274,3 +296,10 @@ linear_pred_table <- data.frame(
 head(linear_pred_table)
 
 mae_pred_linear <- Metrics::mae(linear_pred_table$Actual_Rings, linear_pred_table$Predicted_Rings)
+mae_pred_linear
+
+linear_model_scaled <- lm(Rings ~ as.numeric(Length) + as.numeric(Height) + as.numeric(Diameter), data = males_training_data_scaled)
+
+pred_linear_model_scaled <- predict(linear_model_scaled, newdata = males_testing_data_scaled)
+mae_pred_linear_scaled <- Metrics::mae(males_testing_data_scaled$Rings, pred_linear_model_scaled)
+mae_pred_linear_scaled
