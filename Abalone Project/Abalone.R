@@ -96,6 +96,12 @@ females_training_data <- training(females_split)
 
 summary(males_training_data)
 
+#Devan Hoover
+#Adding Testing Data
+
+males_testing_data <- testing(males_split)
+females_testing_data <- testing(females_split)
+
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
 #Male
@@ -143,7 +149,33 @@ tidy(linear_male_weight)
    geom_smooth(method="lm", formula=y ~ x, color="red") +
    labs(title="Female Height vs Whole Weight", x="Height", y="Whole Weight") +
    theme_minimal()
+
+#Predictions for Training/Testing data
  
- 
- 
+male_model <- lm(Rings ~ Length + Diameter + Whole_Weight, data = males_training_data)
+summary(male_model)
+
+female_model <- lm(Rings ~ Length + Diameter + Whole_Weight, data = females_training_data)
+summary(female_model)
+
+male_predictions <- predict(male_model, newdata = males_testing_data)
+female_predictions <- predict(female_model, newdata = females_testing_data)
+
+mae_male <- Metrics::mae(males_testing_data$Rings, male_predictions)
+rmse_male <- Metrics::rmse(males_testing_data$Rings, male_predictions)
+
+mae_male
+rmse_male
+
+mae_female <- Metrics::mae(females_testing_data$Rings, female_predictions)
+rmse_female <- Metrics::rmse(females_testing_data$Rings, female_predictions)
+#Called Metrics Library due to library conflicts
+
+plot(males_testing_data$Rings, male_predictions,
+     main = "Male Model: Actual vs Predicted",
+     xlab = "Actual Rings", ylab = "Predicted Rings",
+     col = "blue", pch = 20)
+abline(0,1,col = "red")
+
+
 
