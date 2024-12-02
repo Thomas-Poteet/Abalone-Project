@@ -158,14 +158,25 @@ summary(male_model)
 female_model <- lm(Rings ~ Length + Diameter + Whole_Weight, data = females_training_data)
 summary(female_model)
 
+male_model2 <- lm(Rings ~ Length + Diameter + Height, data = males_training_data)
+summary(male_model2)
+
 male_predictions <- predict(male_model, newdata = males_testing_data)
 female_predictions <- predict(female_model, newdata = females_testing_data)
+
+male_predictions2 <- predict(male_model2, newdata = males_testing_data)
 
 mae_male <- Metrics::mae(males_testing_data$Rings, male_predictions)
 rmse_male <- Metrics::rmse(males_testing_data$Rings, male_predictions)
 
 mae_male
 rmse_male
+
+mae_male2 <- Metrics::mae(males_testing_data$Rings, male_predictions2)
+rmse_male2 <- Metrics::rmse(males_testing_data$Rings, male_predictions2)
+
+mae_male2
+rmse_male2
 
 mae_female <- Metrics::mae(females_testing_data$Rings, female_predictions)
 rmse_female <- Metrics::rmse(females_testing_data$Rings, female_predictions)
@@ -177,5 +188,89 @@ plot(males_testing_data$Rings, male_predictions,
      col = "blue", pch = 20)
 abline(0,1,col = "red")
 
+plot(males_testing_data$Rings, male_predictions2,
+     main = "Linear Male Model: Actual vs Predicted",
+     xlab = "Actual Rings", ylab = "Predicted Rings",
+     col = "blue", pch = 20)
+abline(0,1,col = "red")
 
+#Devan Hoover
+#Random Forest Testing
 
+install.packages("randomForest")
+library(randomForest)
+
+male_rf_model <- randomForest(Rings ~ Length + Diameter + Whole_Weight + Height, data = males_training_data, importance = TRUE)
+female_rf_model <- randomForest(Rings ~ Length + Diameter + Whole_Weight + Height, data = females_training_data, importance = TRUE)
+
+print(male_rf_model)
+print(female_rf_model)
+
+#Poly Testing
+
+male_poly_model <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2) + poly(Whole_Weight, 2), data = males_training_data)
+summary(male_poly_model)
+
+male_poly_model3 <- lm(Rings ~ poly(Length, 3) + poly(Height, 3) + poly(Diameter, 3) + poly(Whole_Weight, 3), data = males_testing_data)
+summary(male_poly_model3)
+
+male_poly_model_weightless <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2), data = males_training_data)
+summary(male_poly_model_weightless)
+
+#Scaling Poly Model and Retestings
+males_training_data_scaled <- males_training_data %>% 
+  mutate(
+    Length = scale(Length),
+    Height = scale(Height),
+    Diameter = scale(Diameter)
+  )
+
+male_poly_model_scaled <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2), data = males_training_data_scaled)
+summary(male_poly_model_scaled)
+
+male_poly_model_scaled3 <- lm(Rings ~ poly(Length, 3) + poly(Height, 3) + poly(Diameter, 3), data = males_training_data_scaled)
+summary(male_poly_model_scaled3)
+
+male_poly_model_scaled4 <- lm(Rings ~ poly(Length, 4) + poly(Height, 4) + poly(Diameter, 4), data = males_training_data_scaled)
+summary(male_poly_model_scaled4)
+
+male_poly_model_scaled5 <- lm(Rings ~ poly(Length, 5) + poly(Height, 5) + poly(Diameter, 5), data = males_training_data_scaled)
+summary(male_poly_model_scaled5)
+
+#Iteration Testing
+
+male_model_it <- lm(Rings ~ Length * Length + Height * Height + Whole_Weight + Diameter, data = males_training_data)
+summary(male_model_it)
+
+male_model_it3 <- lm(Rings ~ Length + Diameter + (Height * Height), data = males_training_data)
+summary(male_model_it3)
+
+#Prediction Tables
+
+predicted_rings_males_poly <- predict(male_poly_model, newdata = males_testing_data)
+predicted_rings_males_poly_rounded <- round(predicted_rings_males_poly)
+
+poly_pred_table <- data.frame(
+  Actual_Rings = males_testing_data$Rings,
+  Predicted_Rings = predicted_rings_males_poly_rounded,
+  Actual_Age = males_testing_data$Rings + 1.5,
+  Predicted_Age = predicted_rings_males_poly_rounded + 1.5
+)
+
+head(poly_pred_table)
+
+mae_pred_poly <- Metrics::mae(poly_pred_table$Actual_Rings, poly_pred_table$Predicted_Rings)
+mae_pred_poly
+
+male_predictions2_rounded <- round(male_predictions2)
+
+linear_pred_table <- data.frame(
+  Actual_Rings = males_testing_data$Rings,
+  Predicted_Rings = male_predictions2_rounded,
+  Actual_Age = males_testing_data$Rings + 1.5,
+  Predicted_Age = male_predictions2_rounded + 1.5
+)
+
+head(linear_pred_table)
+
+mae_pred_linear <- Metrics::mae(linear_pred_table$Actual_Rings, linear_pred_table$Predicted_Rings)
