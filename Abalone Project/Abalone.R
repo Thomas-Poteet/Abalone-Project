@@ -207,13 +207,23 @@ print(male_rf_model)
 print(female_rf_model)
 
 #Poly Testing
+#Devan Hoover
 
 male_poly_model <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2) + poly(Whole_Weight, 2), data = males_training_data)
 summary(male_poly_model)
 
-male_poly_model3 <- lm(Rings ~ poly(Length, 3) + poly(Height, 3) + poly(Diameter, 3) + poly(Whole_Weight, 3), data = males_testing_data)
+male_poly_model3 <- lm(Rings ~ poly(Length, 3) + poly(Height, 3) + poly(Diameter, 3), data = males_training_data)
 summary(male_poly_model3)
 
+male_poly_model4 <- lm(Rings ~ poly(Length, 4) + poly(Height, 4) + poly(Diameter, 4), data = males_training_data)
+summary(male_poly_model4)
+
+male_poly_model5 <- lm(Rings ~ poly(Length, 5) + poly(Height, 5) + poly(Diameter, 5), data = males_training_data)
+summary(male_poly_model5)
+
+adv_linear_model <- lm(Rings ~ Length + Height + Diameter + I(Diameter^3) + I(Diameter^4), data = males_training_data)
+summary(adv_linear_model)
+  
 male_poly_model_weightless <- lm(Rings ~ poly(Length, 2) + poly(Height, 2) + poly(Diameter, 2), data = males_training_data)
 summary(male_poly_model_weightless)
 
@@ -261,8 +271,8 @@ summary(male_model_it3)
 
 #Prediction Tables and Mae/Rmse
 
-predicted_rings_males_poly <- predict(male_poly_model, newdata = males_testing_data)
-predicted_rings_males_poly_rounded <- round(predicted_rings_males_poly)
+predicted_rings_males_poly3 <- predict(male_poly_model3, newdata = males_testing_data)
+predicted_rings_males_poly3_rounded <- round(predicted_rings_males_poly3)
 
 pred_poly_3 <- predict(male_poly_model3, newdata = males_testing_data)
 mae_pred_poly_3 <- Metrics::mae(males_testing_data$Rings, pred_poly_3)
@@ -274,15 +284,19 @@ mae_pred_poly_scaled
 
 poly_pred_table <- data.frame(
   Actual_Rings = males_testing_data$Rings,
-  Predicted_Rings = predicted_rings_males_poly_rounded,
+  Predicted_Rings = predicted_rings_males_poly3_rounded,
   Actual_Age = males_testing_data$Rings + 1.5,
-  Predicted_Age = predicted_rings_males_poly_rounded + 1.5
+  Predicted_Age = predicted_rings_males_poly3_rounded + 1.5
 )
 
 head(poly_pred_table)
+poly_pred_table
 
 mae_pred_poly <- Metrics::mae(poly_pred_table$Actual_Rings, poly_pred_table$Predicted_Rings)
 mae_pred_poly
+
+rmse_pred_poly <- Metrics::rmse(poly_pred_table$Actual_Rings, poly_pred_table$Predicted_Rings)
+rmse_pred_poly
 
 male_predictions2_rounded <- round(male_predictions2)
 
@@ -303,3 +317,10 @@ linear_model_scaled <- lm(Rings ~ as.numeric(Length) + as.numeric(Height) + as.n
 pred_linear_model_scaled <- predict(linear_model_scaled, newdata = males_testing_data_scaled)
 mae_pred_linear_scaled <- Metrics::mae(males_testing_data_scaled$Rings, pred_linear_model_scaled)
 mae_pred_linear_scaled
+
+plot(males_testing_data$Rings, pred_poly_3,
+     main = "Polynomial Male Model: Actual vs Predicted",
+     xlab = "Actual Rings", ylab = "Predicted Rings",
+     col = "blue", pch = 20)
+abline(0,1,col = "red")
+
