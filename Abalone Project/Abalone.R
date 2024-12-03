@@ -18,7 +18,6 @@ colnames(data) <- c("Sex","Length", "Diameter", "Height", "Whole_Weight", "Schuc
 #data
 
 
-
 summary(data)
 
 males <- data %>% filter(Sex == "M")
@@ -89,6 +88,7 @@ summary(infants)
 
 #Thomas Poteet
 #Splitting training and test data sets for both males and females seperate
+set.seed(123)
 males_split <- initial_split(males_cleaned, prop=0.80)
 males_training_data <- training(males_split)
 males_testing_data <- testing(males_split)
@@ -98,8 +98,6 @@ females_training_data <- training(females_split)
 females_testing_data <- testing(females_split)
 
 summary(males_training_data)
-
-set.seed(123)
 
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
@@ -158,6 +156,12 @@ tidy(linear_male_weight)
  #define matrix of predictor variables
  x <- data.matrix(males_training_data[, c('Length', 'Diameter', 'Height', 'Whole_Weight')])
  
+ # Extract the predictors from the testing dataset
+ x_test <- data.matrix(males_testing_data[, c('Length', 'Diameter', 'Height', 'Whole_Weight')])
+ 
+ # Extract the actual response variable from the testing dataset
+ y_test <- males_testing_data$Rings
+ 
  #fit ridge regression model
  ridge_model <- glmnet(x, y, alpha = 0)
  
@@ -186,16 +190,36 @@ tidy(linear_male_weight)
  #find SST and SSE
  sst <- sum((y-mean(y))^2)
  sse <- sum((y_predicted - y)^2)
+ mse <- mean((y - y_predicted)^2)
+ mse
  
  #find R-Squared
  rsq <- 1 - sse/sst
  rsq
- 
- #predicted vs actual values plot
- plot(y, y_predicted, 
-      main = "Predicted vs. Actual Values",
-      xlab = "Actual Values", 
-      ylab = "Predicted Values", 
-      pch = 16, col = "blue")
- abline(0, 1, col = "red", lwd = 2) # Add a reference line
 
+ # Predict using the best ridge regression model
+ y_test_predicted <- predict(best_model, newx = x_test)
+ 
+ # Compute the Mean Squared Error
+ mse_test <- mean((y_test - y_test_predicted)^2)
+ mse_test
+ 
+ sst_test <- sum((y_test - mean(y_test))^2)  # Total Sum of Squares
+ sse_test <- sum((y_test - y_test_predicted)^2)  # Sum of Squared Errors
+ rsq_test <- 1 - (sse_test / sst_test)
+ rsq_test
+ 
+ mae_test <- mean(abs(y_test - y_test_predicted))
+ mae_test
+ 
+ rmse_test <- sqrt(mean((y_test - y_test_predicted)^2))
+ rmse_test
+ 
+ # Plot actual vs. predicted values
+ plot(y_test, y_test_predicted, 
+      main = paste("Actual vs Predicted\nR-squared =", round(rsq_test, 4)), 
+      xlab = "Actual", ylab = "Predicted", 
+      pch = 16, col = "blue", cex = 1.5)
+ 
+ # Add a line representing perfect predictions (45-degree line)
+ abline(a = 0, b = 1, col = "red", lwd = 2, lty = 2)
