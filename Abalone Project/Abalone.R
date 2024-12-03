@@ -1,5 +1,4 @@
-install.packages(c("tidyverse", "Metrics", "modelr", "broom", "lmtest", "zoo", "sandwich", "rstatix" , "ggplot2", "rsample"))
-
+install.packages(c("tidyverse", "Metrics", "modelr", "broom", "lmtest", "zoo", "sandwich", "rstatix" , "ggplot2", "rsample", "rpart.plot"))
 library(tidyverse)
 library(Metrics)
 library(modelr)
@@ -10,6 +9,10 @@ library(sandwich)
 library(rstatix)
 library(ggplot2)
 library(rsample)
+library(rpart)
+library(rpart.plot)
+library(ipred)
+library(caret)
 
 data = read.csv("abalone.data")
 
@@ -89,12 +92,13 @@ summary(infants)
 #Thomas Poteet
 #Splitting training and test data sets for both males and females seperate
 males_split <- initial_split(males_cleaned, prop=0.80)
-males_training_data <- training(split)
+males_training_data <- training(males_split)
+males_testing_data <- testing(males_split)
 
 females_split <- initial_split(females_cleaned, prop=0.80)
-females_training_data <- training(split)
+females_training_data <- training(females_split)
 
-summary(training_data)
+summary(males_testing_data)
 
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
@@ -145,5 +149,93 @@ tidy(linear_male_weight)
    theme_minimal()
  
  
+ males_cleaned <- males_cleaned |> select(!Sex)
  
-
+ head(males_training_data)
+ 
+ #first we make a model using all the features to predict the number of rings 
+ reg_tree <- rpart(Rings ~ ., data = males_cleaned, method = "anova")
+ 
+ rpart.plot(reg_tree)
+ 
+ #as you can see from the plot
+ 
+ plotcp(reg_tree)
+ 
+ reg_tree <- rpart(Rings ~ ., data = males_cleaned, method = "anova", control = list(cp = 0, xval = 10))
+ 
+ plotcp(reg_tree)
+ 
+ #rpart.plot(reg_tree)
+ 
+ #reg_tree <- rpart(Rings ~ Length + Diameter + Height + Whole_Weight, data = males_training_data, method = "anova", control = list(minsplit = 16, maxdepth = 14, xval = 10))
+ 
+ hyper_grid <- expand.grid(
+   minsplit = seq(5, 25, 1),
+   maxdepth = seq(5, 15, 1)
+ )
+ head(hyper_grid) 
+ 
+ 
+ 
+ reg_tree_models <- list()
+ 
+ for (i in 1:nrow(hyper_grid)) {
+   
+   # get minsplit, maxdepth values at row i
+   minsplit <- hyper_grid$minsplit[i]
+   maxdepth <- hyper_grid$maxdepth[i]
+   
+   # train a model and store in the list
+   reg_tree_models[[i]] <- rpart(
+     formula = Rings ~ Length + Diameter + Height + Whole_Weight,
+     data    = males_training_data,
+     method  = "anova",
+     control = list(minsplit = minsplit, maxdepth = maxdepth)
+   )
+ }
+ 
+ 
+ # function to get optimal cp
+ get_cp <- function(x) {
+   min    <- which.min(x$cptable[, "xerror"])
+   cp <- x$cptable[min, "CP"] 
+ }
+ 
+ # function to get minimum error
+ get_min_error <- function(x) {
+   min    <- which.min(x$cptable[, "xerror"])
+   xerror <- x$cptable[min, "xerror"] 
+ }
+ 
+ hyper_grid %>%
+   mutate(
+     cp    = purrr::map_dbl(reg_tree_models, get_cp),
+     error = purrr::map_dbl(reg_tree_models, get_min_error)
+   ) %>%
+   arrange(error) %>%
+   top_n(-5, wt = error)
+ 
+ optimal_tree <- rpart(Rings ~ Length + Diameter + Height + Whole_Weight, 
+                       data = males_training_data, 
+                       method = "anova",
+                       control = list(minsplit = 16, maxdepth = 14, cp = 0.01)
+                       )
+ 
+ pred <- predict(optimal_tree, newdata = males_testing_data)
+ 
+ mae <- mean(abs(males_testing_data$Rings - pred))
+ mae
+ 
+ rmse <- sqrt(mean((males_testing_data$Rings - pred)^2))
+ rmse
+ 
+ ss_total <- sum((males_testing_data$Rings - mean(males_testing_data$Rings))^2)
+ ss_residual <- sum((males_testing_data$Rings - pred)^2)
+ r_squared <- 1 - (ss_residual / ss_total)
+ r_squared
+ 
+ rpart.plot(optimal_tree)
+ plotcp(optimal_tree)
+ 
+ 
