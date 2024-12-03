@@ -99,6 +99,8 @@ females_testing_data <- testing(females_split)
 
 summary(males_training_data)
 
+set.seed(123)
+
 #Thomas Poteet
 #Finding Predictors of Whole_Weight
 #Male
