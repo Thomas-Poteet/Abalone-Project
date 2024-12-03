@@ -91,9 +91,11 @@ summary(infants)
 #Splitting training and test data sets for both males and females seperate
 males_split <- initial_split(males_cleaned, prop=0.80)
 males_training_data <- training(males_split)
+males_testing_data <- testing(males_split)
 
 females_split <- initial_split(females_cleaned, prop=0.80)
 females_training_data <- training(females_split)
+females_testing_data <- testing(females_split)
 
 summary(males_training_data)
 
